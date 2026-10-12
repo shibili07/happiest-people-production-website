@@ -7,17 +7,31 @@ import type {
   DepartmentOption,
 } from "@/types/careersApplicationForm";
 
-const useCareersApplicationForm = () => {
+const DEFAULT_DEPARTMENTS = [
+  "Video editing",
+  "Cinematography",
+  "Direction",
+  "Production",
+  "Modelling & casting",
+  "Other",
+];
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+const useCareersApplicationForm = (
+  departments: string[] = DEFAULT_DEPARTMENTS
+) => {
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const intlTelInputRef = useRef<any>(null);
 
   const departmentOptions: DepartmentOption[] = [
     { value: "", label: "Select department" },
-    { value: "web-development", label: "Web Development" },
-    { value: "mobile-development", label: "Mobile Development" },
-    { value: "ui-ux-design", label: "UI/UX Design" },
-    { value: "digital-marketing", label: "Digital Marketing" },
-    { value: "consulting", label: "Consulting" },
+    ...departments.map((name) => ({ value: slugify(name), label: name })),
   ];
 
   const initialValues: FormData = {

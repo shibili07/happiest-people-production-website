@@ -2,11 +2,17 @@
 import React from "react";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
+import GlowBlob from "@/components/GlowBlob";
 import Image from "next/image";
 import Icons from "@/utils/icons";
 import { twc } from "@/utils";
+import type { CareersData } from "@/lib/cms/types";
 
-const CareersBanner = () => {
+interface CareersBannerProps {
+  data: CareersData["hero"];
+}
+
+const CareersBanner = ({ data }: CareersBannerProps) => {
   // Lenis scroll handler
   const handleScrollToOpenings = () => {
     const section = document.querySelector(
@@ -24,41 +30,50 @@ const CareersBanner = () => {
       data-widget="careers-banner"
       className={`careers-banner ${twClasses.section}`}
     >
-      <Container>
-        <h1 className="careers-banner__title fs-title-tertiary ff-figtree font-light text-center leading-tight">
-          Join our
-          <br />
-          <em className="font-medium">creative force</em>
+      <GlowBlob scale={0.9} className="left-1/2 top-[18%]" />
+      <Container className="relative z-10">
+        <h1 className={`careers-banner__title ${twClasses.title}`}>
+          <span className="block">{data.titleLine1}</span>
+          <span className="block">
+            {data.titleLine2}{" "}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/careers/cognition.svg"
+              alt=""
+              aria-hidden="true"
+              className={`careers-banner__icon ${twClasses.icon}`}
+            />{" "}
+            <em className="font-light">{data.titleEmphasis}</em>
+          </span>
         </h1>
-        <div className="careers-banner__button w-max mx-auto mt-12 z-[2] relative">
+        <div className={`careers-banner__button ${twClasses.button}`}>
           <Button
             as="button"
-            text="Current Openings"
+            text={data.buttonLabel}
             icon={<Icons.ChevronRight className="h-3 mt-px" />}
             variant="outlined-with-icon"
-            color="black"
+            color="white"
+            className="rounded-[7px] 2xl:h-[60px] 2xl:min-w-[230px]"
+            textClass="font-medium"
             onClick={handleScrollToOpenings}
           />
         </div>
-        <figure className="careers-banner__image relative aspect-[1559/842] -mt-32 xl:block hidden">
+        <figure className={`careers-banner__image ${twClasses.image}`}>
           <Image
-            src="/images/careers-banner.webp"
-            alt="Career Banner"
+            src={data.image.url}
+            alt={data.image.alt}
             fill
-            className="object-contain"
-            quality={100}
+            priority
+            sizes="(min-width: 1600px) 1573px, 95vw"
+            className="object-cover"
+            style={
+              data.image.focalX !== undefined && data.image.focalY !== undefined
+                ? { objectPosition: `${data.image.focalX}% ${data.image.focalY}%` }
+                : undefined
+            }
           />
         </figure>
       </Container>
-      <figure className="careers-banner__image relative aspect-[1559/842] xl:hidden">
-        <Image
-          src="/images/careers-banner.webp"
-          alt="Career Banner"
-          fill
-          className="object-contain"
-          quality={100}
-        />
-      </figure>
     </section>
   );
 };
@@ -66,5 +81,12 @@ const CareersBanner = () => {
 export default CareersBanner;
 
 const twClasses = twc({
-  section: "lg:pt-12 xl:pb-32 pt-8 pb-0 bg-white mt-[122.6px]",
+  section:
+    "relative overflow-x-clip bg-black pt-36 text-white lg:pt-44 2xl:pt-[200px] 2xl:pb-[330px] xl:pb-32 pb-16",
+  title:
+    "ff-figtree text-center text-4xl font-medium uppercase leading-[1.1] tracking-[-0.037em] sm:text-6xl lg:text-7xl 2xl:text-[98px]",
+  icon: "inline-block h-[0.95em] w-auto align-middle -translate-y-[0.06em]",
+  button: "relative z-[2] mx-auto mt-10 flex w-max justify-center 2xl:mt-[60px]",
+  image:
+    "relative mt-12 aspect-[1573/755] w-full overflow-hidden xl:mt-20 2xl:mt-[130px]",
 });

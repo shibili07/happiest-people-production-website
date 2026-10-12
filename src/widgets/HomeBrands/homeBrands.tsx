@@ -3,9 +3,23 @@ import Container from "@/components/Container";
 import Image from "next/image";
 import MarqueeSlider from "@/components/MarqueeSlider";
 import { twc } from "@/utils";
-import type { BrandLogo } from "@/types/homeBrands";
+import type { CmsLogo } from "@/lib/cms/types";
 
-const HomeBrands = () => {
+interface HomeBrandsProps {
+  brands: CmsLogo[];
+}
+
+// Keep the strip long enough to scroll even when only a few brands exist.
+const MIN_LOGOS = 6;
+
+const HomeBrands = ({ brands }: HomeBrandsProps) => {
+  if (!brands.length) return null;
+
+  const logos = Array.from(
+    { length: Math.max(MIN_LOGOS, brands.length) },
+    (_, index) => brands[index % brands.length],
+  );
+
   return (
     <section
       data-widget="home-brands"
@@ -15,14 +29,14 @@ const HomeBrands = () => {
         <MarqueeSlider
           className={`home-brands__image-grid ${twClasses.image_grid}`}
         >
-          {brandLogos.map((brand, index) => (
+          {logos.map((brand, index) => (
             <Image
               key={`${brand.name}-${index}`}
-              src={brand.src}
-              width={brand.width}
-              height={brand.height}
+              src={brand.image.url}
+              width={brand.image.width ?? 192}
+              height={brand.image.height ?? 66}
               alt={`${brand.name} logo`}
-              className="home-brands__image lg:mx-5 mx-2 h-12 object-contain"
+              className="home-brands__image lg:mx-5 mx-2 h-12 object-contain 2xl:mx-[54px] 2xl:h-[66px]"
             />
           ))}
         </MarqueeSlider>
@@ -33,46 +47,7 @@ const HomeBrands = () => {
 
 export default HomeBrands;
 
-const brandLogos: BrandLogo[] = [
-  {
-    name: "Virtina",
-    src: "/images/virtina.webp",
-    width: 165,
-    height: 66,
-  },
-  {
-    name: "Cartknitter",
-    src: "/images/cartknitter.webp",
-    width: 192,
-    height: 66,
-  },
-  {
-    name: "Rainmaker",
-    src: "/images/rainmaker.webp",
-    width: 192,
-    height: 66,
-  },
-  {
-    name: "Virtina",
-    src: "/images/virtina.webp",
-    width: 165,
-    height: 66,
-  },
-  {
-    name: "Cartknitter",
-    src: "/images/cartknitter.webp",
-    width: 192,
-    height: 66,
-  },
-  {
-    name: "Rainmaker",
-    src: "/images/rainmaker.webp",
-    width: 192,
-    height: 66,
-  },
-];
-
 const twClasses = twc({
-  section: "bg-primary-100 lg:py-6 py-5",
+  section: "bg-[#ffeeab] lg:py-6 py-5 2xl:py-[35px]",
   image_grid: "items-center mix-blend-multiply",
 });

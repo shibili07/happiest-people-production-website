@@ -4,16 +4,22 @@ import Icons from "@/utils/icons";
 import Select from "react-select";
 import useCareersApplicationForm from "./useCareersApplicationForm";
 
-const CareersApplicationForm = () => {
+interface CareersApplicationFormProps {
+  departments?: string[];
+}
+
+const CareersApplicationForm = ({
+  departments,
+}: CareersApplicationFormProps) => {
   const { formik, phoneInputRef, departmentOptions } =
-    useCareersApplicationForm();
+    useCareersApplicationForm(departments);
 
   return (
     <div
       data-component="careers-application-form"
-      className="careers-application-form"
+      className="careers-application-form text-base 2xl:text-[24px]"
     >
-      <form onSubmit={formik.handleSubmit} className="space-y-8 mt-10">
+      <form onSubmit={formik.handleSubmit} className="space-y-8 xl:mt-0 mt-4">
         {/* Top Row - Two Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* First Name Field */}
@@ -253,7 +259,7 @@ const customSelectStyles = {
     ...provided,
     backgroundColor: "transparent",
     border: "none",
-    borderBottom: state.isFocused ? "2px solid #292929" : "2px solid #7e8695",
+    borderBottom: state.isFocused ? "2px solid #fbcf1d" : "2px solid #7e8695",
     borderRadius: 0,
     boxShadow: "none",
     paddingTop: "16px",
@@ -284,21 +290,22 @@ const customSelectStyles = {
   }),
   menu: (provided: any) => ({
     ...provided,
-    backgroundColor: "white",
-    border: "1px solid #7e8695",
+    backgroundColor: "#141414",
+    border: "1px solid #3a3a3a",
     borderRadius: "6px",
-    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 8px 24px -4px rgba(0, 0, 0, 0.6)",
     marginTop: "4px",
+    zIndex: 20,
   }),
   option: (provided: any, state: any) => ({
     ...provided,
-    backgroundColor: state.isSelected ? "#fbcf1dae !important" : "white",
-    color: state.isSelected ? "#000 !important" : "#535353",
+    backgroundColor: state.isSelected ? "#fbcf1d !important" : "transparent",
+    color: state.isSelected ? "#000 !important" : "#d6d6d6",
     fontSize: "14px",
     padding: "8px 12px",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: "#f9fafb",
+      backgroundColor: state.isSelected ? "#fbcf1d" : "#242424",
     },
   }),
   indicatorSeparator: () => ({

@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 const nextConfig: NextConfig = {
+  // Lets a second dev server run side by side (NEXT_DIST_DIR=.next-alt next dev -p 3001).
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   /* config options here */
   turbopack: {
     rules: {
@@ -44,4 +47,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withPayload(nextConfig);

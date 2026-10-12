@@ -4,17 +4,28 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import type { FormData, ServiceOption } from "@/types/contactForm";
 
-const useContactForm = () => {
+const DEFAULT_SERVICES = [
+  "TV & theatre commercials",
+  "Digital films",
+  "Brand reels & corporate videos",
+  "Product shoots",
+  "Other",
+];
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+const useContactForm = (services: string[] = DEFAULT_SERVICES) => {
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const intlTelInputRef = useRef<any>(null);
 
   const serviceOptions: ServiceOption[] = [
     { value: "", label: "Please Select" },
-    { value: "web-development", label: "Web Development" },
-    { value: "mobile-development", label: "Mobile Development" },
-    { value: "ui-ux-design", label: "UI/UX Design" },
-    { value: "digital-marketing", label: "Digital Marketing" },
-    { value: "consulting", label: "Consulting" },
+    ...services.map((name) => ({ value: slugify(name), label: name })),
   ];
 
   const initialValues: FormData = {

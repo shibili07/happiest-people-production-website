@@ -6,6 +6,9 @@ Modern marketing / creative production site built with Next.js 15 App Router, Re
 
 </div>
 
+> **Content is managed in Payload CMS** (MongoDB). Editors use `/admin`; developers
+> see [CMS.md](./CMS.md) for setup, seeding and deployment notes.
+
 ## Table of Contents
 
 1. Overview

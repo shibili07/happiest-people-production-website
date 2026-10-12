@@ -1,42 +1,61 @@
 "use client";
 import React from "react";
 import Container from "@/components/Container";
+import Button from "@/components/Button";
 import SlotCounter from "@/components/SlotCounter";
+import SectionTag from "@/components/SectionTag";
 import AboutBannerIllustration from "@/components/AnimatedIllustrations/AboutBannerIllustration";
+import Icons from "@/utils/icons";
+import { twc } from "@/utils";
+import type { AboutData } from "@/lib/cms/types";
 
-const AboutBanner = () => {
+interface AboutBannerProps {
+  hero: AboutData["hero"];
+  intro: AboutData["intro"];
+}
+
+const AboutBanner = ({ hero, intro }: AboutBannerProps) => {
   return (
     <section
       data-widget="about-banner"
       className={`about-banner ${twClasses.section}`}
     >
       <Container>
-        <div className={`about-banner__label ${twClasses.tag}`}>Work space</div>
-        <h2 className={`about-banner__title ${twClasses.title}`}>
-          We serve
+        <SectionTag>{hero.eyebrow}</SectionTag>
+        <h1 className={`about-banner__title ${twClasses.title}`}>
+          {hero.titleLine1}
           <br />
-          <em className="font-medium">workspace</em>
-        </h2>
+          {hero.titleLine2}
+        </h1>
+        <Button
+          href={hero.cta.href}
+          text={hero.cta.label}
+          icon={<Icons.ArrowRight className="h-3 mt-px" />}
+          variant="link-with-icon"
+          className={`about-banner__button ${twClasses.button}`}
+          textClass="fs-para-primary"
+          color="white"
+        />
 
-        <AboutBannerIllustration />
+        <div className={`about-banner__illustration ${twClasses.illustration}`}>
+          <AboutBannerIllustration />
+        </div>
 
         <div className={`about-banner__contents ${twClasses.contents}`}>
           <p className={`about-banner__description ${twClasses.description}`}>
-            Dataravn empowers businesses with complete control over their SaaS
-            backups, eliminating vendor lock-in and ensuring data security,
-            compliance, and flexibility.
+            {intro.text}
           </p>
 
           <div className={`about-banner__stats ${twClasses.stats}`}>
-            {stats.map(({ count, label }, i) => (
+            {intro.stats.map(({ value, label }, i) => (
               <div key={i} className={twClasses.stat(i !== 0)}>
                 <div
-                  className={`home-about__stats--count ${twClasses.stat_count}`}
+                  className={`about-banner__stats--count ${twClasses.stat_count}`}
                 >
-                  <SlotCounter target={count} duration={3} />
+                  <SlotCounter target={value} duration={3} />
                 </div>
                 <div
-                  className={`home-about__stats--label ${twClasses.stat_label}`}
+                  className={`about-banner__stats--label ${twClasses.stat_label}`}
                 >
                   {label}
                 </div>
@@ -51,23 +70,25 @@ const AboutBanner = () => {
 
 export default AboutBanner;
 
-const stats = [
-  { count: "100+", label: "Customer globally" },
-  { count: "300+", label: "Experts of team" },
-];
-
-const twClasses = {
-  section: "pt-12 lg:pb-32 pb-16 bg-white mt-[122.6px]",
-  tag: "",
-  title: "fs-title-tertiary ff-figtree leading-tight font-light",
-  contents: "max-w-[768px] ms-auto",
-  description: "fs-para-secondary lg:mt-20 mt-10",
-  stats: "flex items-center mt-10",
+const twClasses = twc({
+  section:
+    "bg-black pt-36 text-white lg:pt-44 2xl:pt-[290px] 2xl:pb-[420px] lg:pb-32 pb-16",
+  title:
+    "ff-figtree mt-6 text-4xl font-medium leading-[1.22] tracking-[-0.027em] text-white md:text-6xl lg:text-7xl 2xl:mt-[31px] 2xl:text-[96px]",
+  button: "mt-8 w-max 2xl:mt-[26px]",
+  illustration: "mt-4",
+  contents: "mt-12 xl:mt-20 lg:ml-auto lg:max-w-[1134px] 2xl:mt-[160px]",
+  description:
+    "text-xl font-medium leading-[1.5] tracking-[-0.0125em] text-white/[.93] md:text-3xl 2xl:text-[40px]",
+  stats: "mt-10 flex items-start 2xl:mt-[84px]",
   stat: (hasBorder: boolean) =>
-    `text-center lg:text-left px-8 lg:px-16 ${
-      hasBorder ? "border-l border-gray-300" : "!pl-0"
+    `text-left ${
+      hasBorder
+        ? "border-l border-dotted border-white/30 pl-6 lg:pl-16 2xl:pl-[105px]"
+        : "pr-6 lg:pr-16 2xl:pr-[105px]"
     }`,
   stat_count:
-    "ff-figtree text-4xl lg:text-5xl xl:text-6xl font-medium text-black mb-2",
-  stat_label: "text-gray-400 text-sm lg:text-base",
-};
+    "ff-albert text-5xl font-medium tracking-[-0.027em] text-white lg:text-7xl 2xl:text-[95px]",
+  stat_label:
+    "mt-4 text-sm font-medium text-[#757c8a] lg:text-base 2xl:mt-9 2xl:text-[24px]",
+});

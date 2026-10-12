@@ -2,10 +2,42 @@
 import React from "react";
 import Container from "@/components/Container";
 import ParallaxImageSlider from "@/components/ParallaxImageSlider";
+import GlowBlob from "@/components/GlowBlob";
+import SectionTag from "@/components/SectionTag";
 import useHomeWorkspace from "./useHomeWorkspace";
 import { twc } from "@/utils";
+import type { HomeData } from "@/lib/cms/types";
 
-const HomeWorkspace = () => {
+interface HomeWorkspaceProps {
+  data: HomeData["workspace"];
+}
+
+const RATIOS = ["ratio_1", "ratio_2", "ratio_3"];
+
+/** Wraps the first occurrence of `highlight` in the brand-yellow accent. */
+const withHighlight = (text: string, highlight?: string) => {
+  if (!highlight) return text;
+  const index = text.indexOf(highlight);
+  if (index === -1) return text;
+  return (
+    <>
+      {text.slice(0, index)}
+      <span className="font-semibold text-primary">{highlight}</span>
+      {text.slice(index + highlight.length)}
+    </>
+  );
+};
+
+const HomeWorkspace = ({ data }: HomeWorkspaceProps) => {
+  // The scroll-driven gallery needs a long strip, so repeat short lists.
+  const sliderImages = Array.from(
+    { length: Math.max(6, data.images.length * 2) },
+    (_, index) => {
+      const image = data.images[index % data.images.length];
+      return { ...image, ratio: RATIOS[index % RATIOS.length] };
+    },
+  );
+
   const { containerRef, descriptionRef } = useHomeWorkspace();
 
   return (
@@ -13,29 +45,35 @@ const HomeWorkspace = () => {
       className={`home-workspace ${twClasses.section}`}
       ref={containerRef}
     >
-      <Container>
-        <div className={`home-workspace__grid ${twClasses.grid}`}>
-          <div className={`home-workspace__left ${twClasses.left}`}>
-            <div className={`home-workspace__label ${twClasses.tag}`}>
-              Work space
-            </div>
-            <h2 className={`home-workspace__title ${twClasses.title}`}>
-              We serve
-              <br />
-              <em className="font-medium">workspace</em>
-            </h2>
-          </div>
-          <div className={`home-workspace__right ${twClasses.right}`}>
-            <p
-              className={`home-workspace__description ${twClasses.description}`}
-              ref={descriptionRef}
-            >
-              Dataravn empowers businesses with complete control over their SaaS
-              backups, eliminating vendor lock-in and ensuring data security,
-              compliance, and flexibility.
-            </p>
-          </div>
+      <GlowBlob scale={0.75} className="left-[-6%] top-[8%]" />
+      <GlowBlob scale={0.75} className="right-[-4%] top-[20%]" />
+      <Container className="relative z-10">
+        <div className={`home-workspace__header ${twClasses.header}`}>
+          <SectionTag>{data.eyebrow}</SectionTag>
+          <h2 className={`home-workspace__title ${twClasses.title}`}>
+            {data.titleBefore}{" "}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/home/camera-indoor.svg"
+              alt=""
+              aria-hidden="true"
+              className={`home-workspace__title--icon ${twClasses.title_icon}`}
+            />{" "}
+            {data.titleAfter}{" "}
+            <em className="font-light">{data.titleEmphasis}</em>
+          </h2>
         </div>
+        <p
+          className={`home-workspace__description ${twClasses.description}`}
+          ref={descriptionRef}
+        >
+          {data.paragraphs.map((paragraph, index) => (
+            <React.Fragment key={index}>
+              {index > 0 && <br />}
+              {withHighlight(paragraph, data.highlight)}
+            </React.Fragment>
+          ))}
+        </p>
       </Container>
       <div className={`home-workspace__slider ${twClasses.slider}`}>
         <ParallaxImageSlider images={sliderImages} />
@@ -46,44 +84,16 @@ const HomeWorkspace = () => {
 
 export default HomeWorkspace;
 
-const sliderImages = [
-  {
-    url: "/images/workspace-1.webp",
-    alt: "workspace-1",
-    ratio: "ratio_1",
-  },
-  {
-    url: "/images/workspace-2.webp",
-    alt: "workspace-2",
-    ratio: "ratio_2",
-  },
-  {
-    url: "/images/workspace-3.webp",
-    alt: "workspace-3",
-    ratio: "ratio_3",
-  },
-  {
-    url: "/images/workspace-1.webp",
-    alt: "workspace-1",
-    ratio: "ratio_1",
-  },
-  {
-    url: "/images/workspace-2.webp",
-    alt: "workspace-2",
-    ratio: "ratio_2",
-  },
-  {
-    url: "/images/workspace-3.webp",
-    alt: "workspace-3",
-    ratio: "ratio_3",
-  },
-];
-
 const twClasses = twc({
-  section: "lg:py-32 py-16 bg-white",
-  grid: "xl:flex",
-  right: "flex-1",
-  title: "fs-title-tertiary ff-figtree leading-tight font-light",
-  description: "xl:pt-40 lg:pt-12 pt-6 fs-para-primary max-w-2xl xl:ml-auto",
-  slider: "xl:mt-32 mt-12",
+  section:
+    "relative overflow-x-clip text-white 2xl:pb-[270px] 2xl:pt-0 lg:pb-32 pb-16",
+  header: "flex flex-col items-start gap-8 2xl:gap-[69px]",
+  title:
+    "ff-figtree max-w-[930px] text-4xl font-medium uppercase leading-[1.42] tracking-[-0.057em] text-white md:text-5xl 2xl:text-[64px]",
+  title_icon:
+    "inline-block h-[0.8em] w-auto align-baseline mx-[0.1em] -translate-y-[0.08em]",
+  description:
+    "mt-10 text-lg leading-[1.87] text-white md:text-xl xl:ml-auto xl:max-w-[1056px] 2xl:mt-[120px] 2xl:text-[30.5px]",
+  slider:
+    "mt-12 xl:mt-32 [&_.parallax-image-slider__slide]:rounded-xl 2xl:mt-[150px]",
 });

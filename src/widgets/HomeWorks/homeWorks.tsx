@@ -2,37 +2,51 @@ import React from "react";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
 import ImageCard from "@/components/ImageCard";
+import GlowBlob from "@/components/GlowBlob";
+import SectionTag from "@/components/SectionTag";
 import Icons from "@/utils/icons";
 import { twc } from "@/utils";
+import type { HomeData } from "@/lib/cms/types";
 
-const HomeWorks = () => {
+interface HomeWorksProps {
+  data: HomeData["works"];
+}
+
+const HomeWorks = ({ data }: HomeWorksProps) => {
   return (
     <section
       data-widget="home-works"
       className={`home-works ${twClasses.section}`}
     >
-      <Container>
-        <div className="xl:flex xl:items-center">
-          <h2 className={`home-works__title ${twClasses.title}`}>
-            Our <em className="font-medium">Works</em>
-          </h2>
+      <GlowBlob scale={0.9} className="left-0 top-[8%]" />
+      <GlowBlob scale={0.9} className="right-[-10%] top-[92%]" />
+      <Container className="relative z-10">
+        <div className={`home-works__header ${twClasses.header}`}>
+          <div className={`home-works__heading ${twClasses.heading}`}>
+            <SectionTag>{data.eyebrow}</SectionTag>
+            <h2 className={`home-works__title ${twClasses.title}`}>
+              {data.title.lead}{" "}
+              <em className="font-light">{data.title.emphasis}</em>
+            </h2>
+          </div>
           <p className={`home-works__description ${twClasses.description}`}>
-            We value our clients as partners and are committed to delivering
-            exceptional results tailored to their unique goals.
+            {data.description}
           </p>
         </div>
         <div className={`home-works__list ${twClasses.grid}`}>
-          {works.map((work, index) => {
-            return <ImageCard key={index} {...work} />;
+          {data.items.map((work, index) => {
+            return <ImageCard key={index} theme="dark" {...work} />;
           })}
         </div>
         <div className={`home-works__view-all ${twClasses.view_all}`}>
           <Button
-            text="View All"
+            text={data.viewAllLabel}
             icon={<Icons.ChevronRight className="h-3 mt-px" />}
             variant="outlined-with-icon"
             href="/works"
-            color="black"
+            color="white"
+            className="2xl:h-[60px] 2xl:min-w-[230px] rounded-[11px]"
+            textClass="font-medium 2xl:text-lg"
           />
         </div>
       </Container>
@@ -42,30 +56,15 @@ const HomeWorks = () => {
 
 export default HomeWorks;
 
-const works = [
-  {
-    title: "Shoot for world best head phones nirvana",
-    image: {
-      url: "/images/work-1.webp",
-      alt: "work-1",
-    },
-    videoId: "YPF9hUm4trM",
-  },
-  {
-    title: "Shoot for AKG headset world 1 brand",
-    image: {
-      url: "/images/work-2.webp",
-      alt: "work-2",
-    },
-    videoId: "YPF9hUm4trM",
-  },
-];
-
 const twClasses = twc({
-  section: "2xl:py-48 xl:32 md:py-20 py-16 bg-white",
+  section:
+    "relative overflow-x-clip text-white 2xl:pt-[180px] 2xl:pb-[220px] xl:py-32 md:py-20 py-16",
+  header: "xl:flex xl:items-end xl:justify-between xl:gap-16",
+  heading: "flex flex-col items-start gap-8 2xl:gap-[57px]",
   title:
-    "ff-figtree fs-title-tertiary font-light flex-[0_0_600px] max-w-[600px]",
-  description: "fs-para-secondary max-w-[638px] xl:ms-auto mt-4 xl:mt-0",
-  grid: "grid md:grid-cols-2 md:gap-4 gap-10 2xl:mt-32 mt-16",
-  view_all: "flex justify-center xl:mt-20 mt-12",
+    "ff-figtree fs-title-secondary font-medium uppercase leading-[1.1] tracking-[-0.029em] xl:whitespace-nowrap",
+  description:
+    "fs-para-secondary mt-8 text-white/90 tracking-[0.02em] xl:mt-0 xl:max-w-[640px] 2xl:leading-[37px]",
+  grid: "grid md:grid-cols-2 md:gap-4 2xl:gap-[25px] gap-10 xl:mt-24 mt-12 2xl:mt-[123px]",
+  view_all: "flex justify-center xl:mt-24 mt-12 2xl:mt-[117px]",
 });

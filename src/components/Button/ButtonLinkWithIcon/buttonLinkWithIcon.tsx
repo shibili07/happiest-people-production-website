@@ -10,7 +10,7 @@ type ButtonLinkWithIconProps = {
   className?: string;
   textClass?: string;
   iconClass?: string;
-  color?: "black" | "white";
+  color?: "black" | "white" | "primary";
   [key: string]: any;
 };
 const ButtonLinkWithIcon = ({

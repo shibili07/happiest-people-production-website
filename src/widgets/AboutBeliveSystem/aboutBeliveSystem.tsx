@@ -1,10 +1,35 @@
 import React from "react";
 import Container from "@/components/Container";
 import IconCard from "@/components/IconCard";
-import Icons from "@/utils/icons";
 import { twc } from "@/utils";
+import type { AboutData } from "@/lib/cms/types";
 
-const AboutBeliveSystem = () => {
+interface AboutBeliveSystemProps {
+  data: AboutData["beliefs"];
+}
+
+const icons = {
+  vision: (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/images/about/icon-vision.svg"
+      alt=""
+      aria-hidden="true"
+      className="h-[51px] w-[51px]"
+    />
+  ),
+  mission: (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/images/about/icon-mission.svg"
+      alt=""
+      aria-hidden="true"
+      className="h-[44px] w-[47px]"
+    />
+  ),
+};
+
+const AboutBeliveSystem = ({ data }: AboutBeliveSystemProps) => {
   return (
     <section
       data-widget="about-belive-system"
@@ -15,21 +40,17 @@ const AboutBeliveSystem = () => {
           className={`about-belive-system__title--wrapper ${twClasses.title_wrapper}`}
         >
           <h2 className={`about-belive-system__title ${twClasses.title}`}>
-            Our belive <em className="font-medium">system</em>
+            {data.title.lead}{" "}
+            <em className="font-light">{data.title.emphasis}</em>
           </h2>
-          <p
-            className={`about-belive-system__description ${twClasses.description}`}
-          >
-            Dataravn empowers businesses with complete control over their SaaS
-            backups, eliminating vendor lock-in and ensuring
-          </p>
         </div>
         <div className={`about-belive-system__cards ${twClasses.cards}`}>
-          {cardData.map(({ icon, title, description }, index) => {
+          {data.items.map(({ icon, title, description }, index) => {
             return (
               <IconCard
                 key={index}
-                icon={icon}
+                theme="dark"
+                icon={icons[icon]}
                 title={title}
                 description={description}
               />
@@ -43,25 +64,11 @@ const AboutBeliveSystem = () => {
 
 export default AboutBeliveSystem;
 
-const cardData = [
-  {
-    icon: <Icons.Vision className="h-8" />,
-    title: "Our vision",
-    description:
-      "Dataravn empowers businesses with complete control over their SaaS",
-  },
-  {
-    icon: <Icons.Mission className="h-8" />,
-    title: "Our mission",
-    description:
-      "Dataravn empowers businesses with complete control over their SaaS",
-  },
-];
-
 const twClasses = twc({
-  section: "lg:py-32 py-16 bg-white",
-  title_wrapper: "text-center lg:mb-20 mb-16",
-  title: "fs-title-tertiary ff-figtree font-light text-black",
-  description: "mt-10 fs-para-secondary max-w-3xl mx-auto",
-  cards: "grid lg:grid-cols-2 gap-6 max-w-4xl mx-auto",
+  section: "bg-black text-white lg:pb-32 pb-16 2xl:pb-[430px]",
+  title_wrapper: "text-center",
+  title:
+    "ff-figtree text-4xl font-medium uppercase leading-[1.25] tracking-[-0.039em] text-[#fffafa] md:text-6xl 2xl:text-[82.6px]",
+  cards:
+    "mx-auto mt-12 grid max-w-[1514px] gap-6 lg:grid-cols-2 xl:mt-20 2xl:mt-[107px] 2xl:gap-[48px]",
 });

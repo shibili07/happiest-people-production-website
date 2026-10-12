@@ -15,22 +15,22 @@ const styles = {
   wrapper: {
     display: "inline-flex",
     alignItems: "center" as const,
-    gap: "0.1em",
     lineHeight: 1,
     position: "relative" as const,
   },
   digitsRow: {
     display: "inline-flex",
-    gap: "0.05em",
-    // Ensure consistent digit width to avoid horizontal jitter
-    fontVariantNumeric: "tabular-nums" as const,
   },
   columnViewport: {
     position: "relative" as const,
     overflow: "hidden" as const,
     display: "inline-block",
     height: "1em",
-    width: "1ch", // make each column as wide as one digit
+    // The column is as wide as its final digit (see the ghost digit below).
+    // Side padding gives wider digits room while rolling; the negative margin
+    // cancels it so the settled number reads as plain, tightly set text.
+    padding: "0 0.1em",
+    margin: "0 -0.1em",
     textAlign: "center" as const,
     // Fade top & bottom to avoid harsh crop
     WebkitMaskImage:
@@ -44,6 +44,7 @@ const styles = {
     position: "absolute" as const,
     top: 0,
     left: 0,
+    right: 0,
     willChange: "transform" as const,
   },
   digit: {
@@ -52,7 +53,7 @@ const styles = {
     lineHeight: "1em",
   },
   suffix: {
-    marginLeft: "0.1em",
+    marginLeft: "0.03em",
   },
 };
 
@@ -62,7 +63,6 @@ const SlotCounter = ({ target, duration = 2 }: SlotCounterProps) => {
   const digitHeightRef = useRef<number>(0);
   const measureRef = useRef<HTMLDivElement | null>(null);
   const [measured, setMeasured] = useState(false);
-  const [hasPlayed, setHasPlayed] = useState(false);
 
   // Parse numeric part and suffix
   const match = useMemo(() => target.match(/^(\d+)(.*)$/), [target]);
@@ -112,7 +112,6 @@ const SlotCounter = ({ target, duration = 2 }: SlotCounterProps) => {
       start: "top 80%",
       once: true,
       onEnter: () => {
-        setHasPlayed(true);
         // Re-measure digit height right before animation in case fonts finished loading
         const sample = containerRef.current?.querySelector(
           '[data-digit-item="true"]'
@@ -151,6 +150,13 @@ const SlotCounter = ({ target, duration = 2 }: SlotCounterProps) => {
                 // Snap to pixel to avoid blurry/half lines and ensure exact landing
                 roundProps: "y",
                 force3D: true,
+                // Drop the top/bottom fade once settled so the final digits are crisp
+                onComplete: () => {
+                  const viewport = col.parentElement;
+                  if (!viewport) return;
+                  viewport.style.maskImage = "none";
+                  viewport.style.webkitMaskImage = "none";
+                },
               }
             );
           });
@@ -190,6 +196,7 @@ const SlotCounter = ({ target, duration = 2 }: SlotCounterProps) => {
         }}
         aria-hidden="true"
       >
+        <span style={{ visibility: "hidden" }}>{digit}</span>
         <span ref={setColRef(idx)} style={styles.columnInner}>
           {items.map((n, i) => (
             <span
@@ -215,32 +222,6 @@ const SlotCounter = ({ target, duration = 2 }: SlotCounterProps) => {
 
   return (
     <div ref={containerRef} style={styles.wrapper}>
-      {/* Initial zero overlay to avoid blank state before animation */}
-      {!hasPlayed && (
-        <span
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            inset: 0,
-            pointerEvents: "none",
-            display: "inline-flex",
-            gap: (styles.digitsRow as any).gap || "0.05em",
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          {digits.map((_, i) => (
-            <span
-              key={`z-${i}`}
-              style={{
-                width: "1ch",
-                textAlign: "center",
-              }}
-            >
-              0
-            </span>
-          ))}
-        </span>
-      )}
       {/* Hidden measurement row to determine exact digit height */}
       <span
         ref={measureRef}
@@ -251,7 +232,6 @@ const SlotCounter = ({ target, duration = 2 }: SlotCounterProps) => {
           height: "auto",
           lineHeight: "normal",
           whiteSpace: "nowrap",
-          fontVariantNumeric: "tabular-nums",
         }}
       >
         0

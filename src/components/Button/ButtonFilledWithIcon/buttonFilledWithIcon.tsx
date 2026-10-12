@@ -10,7 +10,7 @@ type ButtonFilledWithIconProps = {
   className?: string;
   textClass?: string;
   iconClass?: string;
-  color?: "black" | "white";
+  color?: "black" | "white" | "primary";
   [key: string]: any;
 };
 
@@ -33,6 +33,13 @@ const ButtonFilledWithIcon = ({
           text: "text-black group-hover:text-white",
           icon: "text-black group-hover:text-white",
           fill: "before:bg-black",
+        };
+      case "primary":
+        return {
+          background: "bg-primary",
+          text: "text-black group-hover:text-black",
+          icon: "text-black group-hover:text-black",
+          fill: "before:bg-white",
         };
       case "black":
         return {

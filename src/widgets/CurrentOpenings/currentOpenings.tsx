@@ -3,8 +3,15 @@ import React from "react";
 import Container from "@/components/Container";
 import { twc } from "@/utils";
 import CareersAccordion from "@/components/CareersAccordion";
+import type { CareersAccordionSection } from "@/types/careersAccordion";
+import type { CareersData } from "@/lib/cms/types";
 
-const CurrentOpenings = () => {
+interface CurrentOpeningsProps {
+  openings: CareersAccordionSection[];
+  data: CareersData["openings"];
+}
+
+const CurrentOpenings = ({ openings, data }: CurrentOpeningsProps) => {
   return (
     <section
       data-widget="careers-current-openings"
@@ -12,10 +19,21 @@ const CurrentOpenings = () => {
     >
       <Container>
         <h2 className={`careers-current-openings__title ${twClasses.title}`}>
-          Current <em className="font-medium">openings</em>
+          {data.title.lead}{" "}
+          <em className="font-medium">{data.title.emphasis}</em>
         </h2>
-        <div className="careers-current-openings__list mt-16">
-          <CareersAccordion sections={currentOpenings} />
+        <div className={`careers-current-openings__list ${twClasses.list}`}>
+          {openings.length ? (
+            <CareersAccordion
+              sections={openings}
+              theme="dark"
+              applyHref="#careers-application"
+            />
+          ) : (
+            <p className="ff-manrope mx-auto max-w-xl text-center text-lg text-white/60">
+              {data.emptyMessage}
+            </p>
+          )}
         </div>
       </Container>
     </section>
@@ -24,69 +42,9 @@ const CurrentOpenings = () => {
 
 export default CurrentOpenings;
 
-const currentOpenings = [
-  {
-    title: "Video editor",
-    type: "Remote - Full time",
-    richText: (
-      <>
-        <p>
-          We are looking for a skilled{" "}
-          <strong className="font-semibold">video editor</strong> to join our
-          creative team. The ideal candidate will have a strong portfolio
-          showcasing their editing skills and a keen eye for detail.
-        </p>
-        <ul className="list-disc ml-6 mt-2">
-          <li>
-            Expertise in Adobe Premiere Pro, Final Cut Pro, or similar tools
-          </li>
-          <li>Ability to work with tight deadlines</li>
-          <li>Experience with color grading and sound editing</li>
-        </ul>
-      </>
-    ),
-  },
-  {
-    title: "Cinematographer",
-    type: "Remote - Full time",
-    richText: (
-      <>
-        <p>
-          We are looking for a talented{" "}
-          <strong className="font-semibold">cinematographer</strong> to join our
-          team. The ideal candidate will have experience in various filming
-          techniques and a strong portfolio.
-        </p>
-        <ul className="list-disc ml-6 mt-2">
-          <li>Proficiency in camera operation and lighting</li>
-          <li>Creative eye for visual storytelling</li>
-          <li>Experience with commercial and documentary shoots</li>
-        </ul>
-      </>
-    ),
-  },
-  {
-    title: "Model ( male )",
-    type: "Remote - Full time",
-    richText: (
-      <>
-        <p>
-          We are looking for a{" "}
-          <strong className="font-semibold">male model</strong> to join our
-          team. The ideal candidate will have experience in various modeling
-          techniques and a strong portfolio.
-        </p>
-        <ul className="list-disc ml-6 mt-2">
-          <li>Previous experience in fashion or commercial modeling</li>
-          <li>Comfortable in front of the camera</li>
-          <li>Ability to take direction and adapt to different styles</li>
-        </ul>
-      </>
-    ),
-  },
-];
-
 const twClasses = twc({
-  section: "lg:py-32 py-16 bg-white",
-  title: "fs-title-tertiary ff-figtree font-light text-center",
+  section: "bg-black text-white lg:pb-32 pb-16 2xl:pb-[300px]",
+  title:
+    "ff-figtree text-center text-4xl font-light leading-[1.25] tracking-[-0.039em] sm:text-6xl 2xl:text-[82.6px]",
+  list: "mt-12 xl:mt-20 2xl:mt-[130px]",
 });

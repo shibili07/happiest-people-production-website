@@ -152,6 +152,9 @@ html.lenis { height: auto; }
   .ff-manrope {
     font-family: var(--font-manrope), sans-serif;
   }
+  .ff-albert {
+    font-family: var(--font-albert-sans), sans-serif;
+  }
 
   .fs-title-primary {
     @apply 2xl:text-title-primary-2xl xl:text-title-primary-xl lg:text-title-primary-lg md:text-title-primary-md sm:text-title-primary-sm text-title-primary;
@@ -177,6 +180,11 @@ html.lenis { height: auto; }
 
   .btn-icon path {
     stroke: currentColor;
+  }
+
+  /* For solid icons whose SVG has a hard-coded fill, so they can follow text color */
+  .icon-fill-current path {
+    fill: currentColor;
   }
 
   .md\:seperator-r {
@@ -297,6 +305,28 @@ html.lenis { height: auto; }
   .floating-label-container.select-field:has(.react-select__control--has-value) .floating-label,
   .floating-label-container.select-field:has(.react-select__control--is-focused) .floating-label {
     @apply transform -translate-y-[150%] scale-75 text-grey-900;
+  }
+
+  /* Careers application form on the dark theme */
+  .careers-application-form .floating-input,
+  .form-dark .floating-input {
+    @apply border-white/45 text-white;
+  }
+  .careers-application-form .floating-input:focus,
+  .form-dark .floating-input:focus {
+    @apply border-primary;
+  }
+  .careers-application-form .floating-input:focus + .floating-label,
+  .careers-application-form .floating-input:not(:placeholder-shown) + .floating-label,
+  .careers-application-form .select-field .floating-label,
+  .form-dark .floating-input:focus + .floating-label,
+  .form-dark .floating-input:not(:placeholder-shown) + .floating-label,
+  .form-dark .select-field .floating-label {
+    @apply text-white/70;
+  }
+  .careers-application-form .iti__selected-dial-code,
+  .form-dark .iti__selected-dial-code {
+    color: #cbcbcb;
   }
 
   .submit-button {

@@ -1,75 +1,77 @@
 import React from "react";
 import Container from "@/components/Container";
-import { twc } from "@/utils";
+import GlowBlob from "@/components/GlowBlob";
 import Image from "next/image";
+import { twc } from "@/utils";
+import type { CareersData } from "@/lib/cms/types";
 
-const CareersTailored = () => {
+interface CareersTailoredProps {
+  data: CareersData["culture"];
+}
+
+const focus = (image: CareersData["culture"]["images"][number]) =>
+  image.focalX !== undefined && image.focalY !== undefined
+    ? { objectPosition: `${image.focalX}% ${image.focalY}%` }
+    : undefined;
+
+const CareersTailored = ({ data }: CareersTailoredProps) => {
+  const [first, second, third] = data.images;
+
   return (
     <section
       data-widget="careers-tailored"
       className={`careers-tailored ${twClasses.section}`}
     >
-      <Container>
+      <GlowBlob scale={0.9} className="left-[-6%] top-[60%]" />
+      <Container className="relative z-10">
         <div className={`careers-tailored__wrapper ${twClasses.wrapper}`}>
+          {/* Stair-stepped photo pair */}
           <div className={`careers-tailored__grid ${twClasses.img_grid}`}>
-            {/* Top left cell */}
-            <div
-              className={`careers-tailored__img-cell ${twClasses.img_cell_1}`}
-            >
+            <div className={`careers-tailored__img-cell ${twClasses.img_small}`}>
               <Image
-                src="/images/careers-tailored-1.webp"
-                alt="Person working"
+                src={first.url}
+                alt={first.alt}
                 fill
+                sizes="(min-width: 1536px) 229px, 25vw"
                 className="object-cover"
+                style={focus(first)}
               />
             </div>
-            {/* Bottom right cell */}
-            <div
-              className={`careers-tailored__img-cell ${twClasses.img_cell_2}`}
-            >
+            <div className={`careers-tailored__img-cell ${twClasses.img_large}`}>
               <Image
-                src="/images/careers-tailored-2.webp"
-                alt="Person thinking"
+                src={second.url}
+                alt={second.alt}
                 fill
+                sizes="(min-width: 1536px) 434px, 50vw"
                 className="object-cover"
+                style={focus(second)}
               />
             </div>
           </div>
-          {/* Text content */}
+
           <div
             className={`careers-tailored__text-content ${twClasses.text_content}`}
           >
             <h2 className={`careers-tailored__title ${twClasses.title}`}>
-              Tailores
+              {data.title.lead}
               <br />
-              <span className="font-medium">
-                for{" "}
-                <span
-                  className={`careers-tailored__title--em-wrap ${twClasses.title_emphasize_wrap} ${twClasses.title_emphasize_wrap.after}`}
-                >
-                  <em
-                    className={`careers-tailored__title--em ${twClasses.title_emphasize}`}
-                  >
-                    you
-                  </em>
-                </span>
-                .
-              </span>
+              <em className={twClasses.title_em}>{data.title.emphasis}</em>
             </h2>
             <p
               className={`careers-tailored__description ${twClasses.description}`}
             >
-              HPP empowers businesses with complete control over their SaaS
+              {data.description}
             </p>
-            {/* Bottom right image */}
             <div
-              className={`careers-tailored__img-cell ${twClasses.img_cell_3}`}
+              className={`careers-tailored__img-cell ${twClasses.img_third}`}
             >
               <Image
-                src="/images/careers-tailored-3.webp"
-                alt="Person on phone"
+                src={third.url}
+                alt={third.alt}
                 fill
+                sizes="(min-width: 1536px) 281px, 40vw"
                 className="object-cover"
+                style={focus(third)}
               />
             </div>
           </div>
@@ -82,22 +84,22 @@ const CareersTailored = () => {
 export default CareersTailored;
 
 const twClasses = twc({
-  section: "lg:py-32 py-16 bg-tertiary",
-  wrapper: "relative xl:grid grid-cols-2 gap-10",
-  img_grid: "grid w-max h-max max-xl:mb-12",
-  img_cell_1:
-    "row-start-1 col-start-1 size-[150px] max-sm:size-[100px] aspect-square relative",
-  img_cell_2:
-    "row-start-2 col-start-2 size-[300px] max-sm:size-[200px] aspect-square relative",
-  img_cell_3: "w-[140px] max-sm:w-[100px] ms-auto xl:mt-36 mt-12 aspect-square relative",
+  section:
+    "relative overflow-x-clip bg-black text-white 2xl:pb-[260px] lg:pb-32 pb-16",
+  wrapper: "grid items-start gap-10 xl:grid-cols-[minmax(0,662fr)_minmax(0,720fr)] xl:gap-[10%]",
+  img_grid:
+    "grid w-full max-w-[662px] grid-cols-[228fr_434fr] max-xl:mx-auto xl:mt-[8%]",
+  img_small:
+    "relative col-start-1 row-start-1 aspect-square w-full overflow-hidden",
+  img_large:
+    "relative col-start-2 row-start-2 aspect-[434/401] w-full overflow-hidden",
+  text_content: "relative max-xl:text-center",
   title:
-    "ff-figtree font-light fs-title-quaternary leading-tight text-black mb-4 max-xl:text-center",
-  title_emphasize_wrap: {
-    DEFAULT: "relative",
-    after:
-      "after:content-[''] after:block after:w-full after:h-1 after:bg-primary after:absolute after:left-0 after:bottom-0 after:-rotate-2 after:-translate-y-full",
-  },
-  title_emphasize: "relative z-[2]",
-  text_content: "pt-5",
-  description: "fs-para-secondary text-black max-w-sm mt-8 max-xl:mx-auto max-xl:text-center",
+    "ff-figtree text-4xl font-medium uppercase leading-[1.18] tracking-[-0.041em] sm:text-6xl 2xl:text-[82px]",
+  title_em:
+    "bg-gradient-to-b from-white to-[#e0e34b] bg-clip-text pe-3 font-light text-transparent",
+  description:
+    "mt-8 max-w-[592px] text-lg leading-[1.5] text-white max-xl:mx-auto md:text-2xl 2xl:mt-[85px] 2xl:text-[30.5px]",
+  img_third:
+    "relative ms-auto mt-10 aspect-[281/245] w-[45%] max-w-[281px] overflow-hidden max-xl:mx-auto xl:mt-[38px]",
 });
